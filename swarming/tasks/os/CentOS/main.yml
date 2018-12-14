@@ -1,0 +1,41 @@
+---
+- name: "[CentOS] install needed packages"
+  yum:
+    name:
+    state: present
+  with_items:
+    - device-mapper-persistent-data
+    - lvm2
+    - awk 
+
+- name: "[CentOS] Remove docker-ce.repo"
+  file:
+    path: /etc/yum.repos.d/docker-ce.repo
+    state: absent
+
+- name: "[CentOS] Add Docker CE repository"
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: 0644
+
+- name: "[CentOS] Install Docker CE"
+  yum:
+    name: docker-ce
+    state: present
+
+- name: "[CentOS] Docker CE systemd enabled/autostart"
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+# Managers tasks
+- name: "[CentOS] [Managers]"
+  include: managers.yml
+  when: "'managers' in group_names"
+
+# Workers tasks
+- name: "[CentOS] [Workers]"
+  include: workers.yml
+  when: "'workers' in group_names"

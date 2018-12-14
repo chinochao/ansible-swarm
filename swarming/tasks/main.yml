@@ -1,2 +1,5 @@
 ---
 # tasks file for swarming
+
+- name: OS Specific
+  include: "os/{{ ansible_distribution }}/main.yml"

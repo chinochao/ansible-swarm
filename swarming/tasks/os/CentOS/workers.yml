@@ -1,0 +1,14 @@
+---
+- name: "[CentOS] [Workers] Inspect swarm"
+  shell: >
+        docker info 2> /dev/null|awk -F: '/^Swarm: / {print $2}'
+  register: swarm_info
+  failed_when: "'active' not in swarm_info.stdout" # using active as it works for active and inactive.
+
+- name: "[CentOS] [Managers] Swam Worker Join"
+  shell: >
+        docker swarm join --token {{ hostvars['swarm_master']['swarm_token_worker']['stdout'] }}
+  register: swarm_token_worker
+  failed_when: "'This node joined a swarm as a worker' not in swarm_token_worker.stdout"
+  when: 
+    - "'inactive' in swarm_info.stdout"
