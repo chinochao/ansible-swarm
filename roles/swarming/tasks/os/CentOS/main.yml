@@ -15,7 +15,7 @@
 
 - name: "[CentOS] Add Docker CE repository"
   get_url:
-    url: https://download.docker.com/linux/centos/docker-ce.repo
+    url: "{{ centos_repo_url }}"
     dest: /etc/yum.repos.d/docker-ce.repo
     mode: 0644
 
@@ -23,6 +23,15 @@
   yum:
     name: docker-ce
     state: present
+  when: swarm_upgrade != false
+
+- name: "[CentOS] Upgrade Docker CE"
+  yum:
+    name: docker-ce
+    state: upgrade
+  when: swarm_upgrade == true
+  notify:
+    - restart_docker-ce
 
 - name: "[CentOS] Docker CE systemd enabled/autostart"
   service:

@@ -1,0 +1,7 @@
+---
+# handlers file for swarming
+- name: "restart_docker-ce"
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
