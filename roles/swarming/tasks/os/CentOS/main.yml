@@ -23,7 +23,7 @@
   yum:
     name: docker-ce
     state: present
-  when: swarm_upgrade != false
+  when: swarm_upgrade == false
 
 - name: "[CentOS] Upgrade Docker CE"
   yum:
