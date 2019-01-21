@@ -1,12 +1,9 @@
 
 [managers]
-ccnet-rke-control01 ansible_host=10.0.0.46 swarm_init=yes
-ccnet-rke-control02 ansible_host=10.0.0.47 swarm_init=no
-ccnet-rke-control03 ansible_host=10.0.0.48 swarm_init=no
-ccnet-rke-control04 ansible_host=10.0.0.41 swarm_init=no
-ccnet-rke-control05 ansible_host=10.0.0.42 swarm_init=no
+ccnet-pi01 ansible_host=10.0.0.11 swarm_init=yes ansible_python_interpreter=/usr/bin/python3
+ccnet-pi02 ansible_host=10.0.0.12 swarm_init=no ansible_python_interpreter=/usr/bin/python3
+ccnet-pi03 ansible_host=10.0.0.13 swarm_init=no ansible_python_interpreter=/usr/bin/python3
+
 
 [workers]
-ccnet-rke-worker01 ansible_host=10.0.0.49
-ccnet-rke-worker02 ansible_host=10.0.0.50
-ccnet-rke-worker03 ansible_host=10.0.0.43
+ccnet-pi04 ansible_host=10.0.0.14 ansible_python_interpreter=/usr/bin/python3

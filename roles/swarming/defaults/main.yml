@@ -1,3 +1,3 @@
 ---
 # defaults file for swarming
-centos_repo_url: "https://download.docker.com/linux/centos/docker-ce.repo"
+centos_7_x86_64_repo_url: "https://download.docker.com/linux/centos/docker-ce.repo"

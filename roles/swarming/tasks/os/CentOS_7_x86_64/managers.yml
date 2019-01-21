@@ -1,38 +1,38 @@
 ---
-- name: "[CentOS] [Managers] Inspect swarm"
+- name: "[CentOS_7_x86_64] [Managers] Inspect swarm"
   shell: >
         docker info 2> /dev/null|awk -F: '/^Swarm: / {print $2}'
   register: swarm_info
   failed_when: "'active' not in swarm_info.stdout" # using active as it works for active and inactive.
 
-- name: "[CentOS] [Managers] Swam init"
+- name: "[CentOS_7_x86_64] [Managers] Swam init"
   shell: >
         docker swarm init
   when: 
     - swarm_init == 'yes'
     - "'inactive' in swarm_info.stdout"
 
-- name: "[CentOS] [Managers] Swam Manager Token"
+- name: "[CentOS_7_x86_64] [Managers] Swam Manager Token"
   shell: >
         docker swarm join-token manager 2> /dev/null|awk '/docker swarm join/ {print $5 " " $6}'
   register: token_manager
   when: swarm_init == 'yes'
 
-- name: "[CentOS] [Managers] Swam Worker Token"
+- name: "[CentOS_7_x86_64] [Managers] Swam Worker Token"
   shell: >
         docker swarm join-token worker 2> /dev/null|awk '/docker swarm join/ {print $5 " " $6}'
   register: token_worker
   when: swarm_init == 'yes'
 
 # Hack to use token across different hosts as variable.
-- name: "[CentOS] [Managers] Add Master Manager to hosts"
+- name: "[CentOS_7_x86_64] [Managers] Add Master Manager to hosts"
   add_host:
     name: swarm_master
     swarm_token_manager: "{{ token_manager }}"
     swarm_token_worker: "{{ token_worker }}"
   when: swarm_init == 'yes'
 
-- name: "[CentOS] [Managers] Swam Manager Join"
+- name: "[CentOS_7_x86_64] [Managers] Swam Manager Join"
   shell: >
         docker swarm join --token {{ hostvars['swarm_master']['swarm_token_manager']['stdout'] }}
   register: swarm_token_manager

@@ -1,0 +1,57 @@
+---
+# - name: "[Ubuntu_18_armv7l] install needed packages"
+#   yum:
+#     name: "{{ item }}"
+#     state: present
+#   with_items:
+#     - device-mapper-persistent-data
+#     - lvm2
+#     - awk 
+
+# - name: "[Ubuntu_18_armv7l] Remove docker-ce.repo"
+#   file:
+#     path: /etc/yum.repos.d/docker-ce.repo
+#     state: absent
+
+- name: "[Ubuntu_18_armv7l] Add Docker GPG key"
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: "[Ubuntu_18_armv7l] Add Docker CE repository"
+  apt_repository: 
+    repo: "deb [arch=armhf] https://download.docker.com/linux/ubuntu bionic stable"
+    state: present
+  retries: 2
+
+- name: "[Ubuntu_18_armv7l] Install Docker CE"
+  apt:
+    name: docker-ce
+    state: present
+    update_cache: yes
+  when: swarm_upgrade == false
+
+- name: "[Ubuntu_18_armv7l] Upgrade Docker CE"
+  apt:
+    name: docker-ce
+    state: latest
+    update_cache: yes
+  when: swarm_upgrade == true
+  notify:
+    - restart_docker-ce
+
+- name: "[Ubuntu_18_armv7l] Docker CE systemd enabled/autostart"
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+# Managers tasks
+- name: "[Ubuntu_18_armv7l] [Managers]"
+  include: managers.yml
+  when: "'managers' in group_names"
+
+# Workers tasks
+- name: "[Ubuntu_18_armv7l] [Workers]"
+  include: workers.yml
+  when: "'workers' in group_names"

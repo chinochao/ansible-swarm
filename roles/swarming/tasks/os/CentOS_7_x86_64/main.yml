@@ -1,50 +1,50 @@
 ---
-- name: "[CentOS] install needed packages"
+- name: "[CentOS_7_x86_64] install needed packages"
   yum:
-    name:
+    name: "{{ item }}"
     state: present
   with_items:
     - device-mapper-persistent-data
     - lvm2
     - awk 
 
-- name: "[CentOS] Remove docker-ce.repo"
+- name: "[CentOS_7_x86_64] Remove docker-ce.repo"
   file:
     path: /etc/yum.repos.d/docker-ce.repo
     state: absent
 
-- name: "[CentOS] Add Docker CE repository"
+- name: "[CentOS_7_x86_64] Add Docker CE repository"
   get_url:
-    url: "{{ centos_repo_url }}"
+    url: "{{ centos_7_x86_64_repo_url }}"
     dest: /etc/yum.repos.d/docker-ce.repo
     mode: 0644
 
-- name: "[CentOS] Install Docker CE"
+- name: "[CentOS_7_x86_64] Install Docker CE"
   yum:
     name: docker-ce
     state: present
   when: swarm_upgrade == false
 
-- name: "[CentOS] Upgrade Docker CE"
+- name: "[CentOS_7_x86_64] Upgrade Docker CE"
   yum:
     name: docker-ce
-    state: upgrade
+    state: latest
   when: swarm_upgrade == true
   notify:
     - restart_docker-ce
 
-- name: "[CentOS] Docker CE systemd enabled/autostart"
+- name: "[CentOS_7_x86_64] Docker CE systemd enabled/autostart"
   service:
     name: docker
     state: started
     enabled: yes
 
 # Managers tasks
-- name: "[CentOS] [Managers]"
+- name: "[CentOS_7_x86_64] [Managers]"
   include: managers.yml
   when: "'managers' in group_names"
 
 # Workers tasks
-- name: "[CentOS] [Workers]"
+- name: "[CentOS_7_x86_64] [Workers]"
   include: workers.yml
   when: "'workers' in group_names"

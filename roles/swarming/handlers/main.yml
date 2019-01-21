@@ -1,6 +1,6 @@
 ---
 # handlers file for swarming
-- name: "restart_docker-ce"
+- name: restart_docker-ce
   service:
     name: docker
     state: restarted

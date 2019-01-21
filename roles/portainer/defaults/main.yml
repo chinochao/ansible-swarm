@@ -1,4 +1,0 @@
----
-# defaults file for portainer
-
-portainer_agent_network: 'portainer_agent_network'
